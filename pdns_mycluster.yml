@@ -2,7 +2,7 @@
 
 # Masters definition
 
-- hosts: 192.168.0.200
+- hosts: masters
   roles:
     - { role: PowerDNS.pdns }
   vars:
@@ -16,7 +16,7 @@
     pdns_backends:
       gpgsql:
         gpgsql-dbname: "pdns"
-        gpgsql-host: "192.168.0.200"
+        gpgsql-host: "1.2.3.4"
         gpgsql-user: "pdns"
         gpgsql-password: "YOUR_DB_PASS_HERE"
         gpgsql-extra-connection-parameters: ""
@@ -26,7 +26,7 @@
 
 # Slave Server Set A
 
-- hosts: 192.168.0.201, 192.168.0.202
+- hosts: slaves
   roles:
     - { role: PowerDNS.pdns }
     - { role: sqlite_slave_insert }
