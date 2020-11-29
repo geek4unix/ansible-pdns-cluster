@@ -39,7 +39,7 @@
       master: false
       slave: true
       superslave: true
-      local-address: '127.0.0.1'
+      local-address: "{{ ansible_eth0.ipv4.address }}"
     pdns_backends:
       gsqlite3:
         database: "{{ database_name }}"
