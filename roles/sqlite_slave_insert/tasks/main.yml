@@ -1,0 +1,14 @@
+- name: Configure the SQL supermaster insert on slaves
+  template:
+    src: supermaster_insert.sql.template
+    dest: /var/lib/powerdns/supermaster_insert.sql
+
+- name: Stat File 
+  stat:
+    path: /etc/SUPERMASTER_SET
+  register: SUPERMASTER_SET
+
+- name: Run SQL insert for supermaster
+  shell: sqlite3 /var/lib/powerdns/db.sqlite < /var/lib/powerdns/supermaster_insert.sql > /etc/SUPERMASTER_SET
+  when: not SUPERMASTER_SET.stat.exists
+

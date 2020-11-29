@@ -1,0 +1,34 @@
+# this playbook uses https://github.com/PowerDNS/pdns-ansible.git
+
+- hosts: 192.168.0.200
+  roles:
+    - { role: PowerDNS.pdns }
+  vars:
+    database_name: '/var/lib/powerdns/db.sqlite'
+    pdns_config:
+      master: true
+      slave: false
+      local-address: '192.168.0.200'
+      prevent-self-notification: true
+    pdns_backends:
+      gsqlite3:
+        database: "{{ database_name }}"
+        dnssec: false
+    pdns_sqlite_databases_locations:
+      - "{{ database_name }}"
+
+- hosts: 192.168.0.201
+  roles:
+    - { role: PowerDNS.pdns }
+    - { role: sqlite_slave_insert }
+  vars:
+    database_name: '/var/lib/powerdns/db.sqlite'
+    pdns_config:
+      master: false
+      slave: true
+      superslave: true
+      local-address: '127.0.0.1'
+    pdns_backends:
+      gsqlite3:
+        database: "{{ database_name }}"
+        dnssec: false
