@@ -1,23 +1,35 @@
 # this playbook uses https://github.com/PowerDNS/pdns-ansible.git
 
+# Masters definition
+
 - hosts: 192.168.0.200
   roles:
     - { role: PowerDNS.pdns }
   vars:
     database_name: '/var/lib/powerdns/db.sqlite'
+    gpgsql_database_name: 'pdns'
+    gpgsql_database_host: '1.2.3.4'
+    gpgsql_database_user: 'pdns'
+    gpgsql_database_password: 'YOUR_DB_PASS_HERE'
+    gpgsql_database_extra: ''
     pdns_config:
       master: true
       slave: false
       local-address: '192.168.0.200'
       prevent-self-notification: true
     pdns_backends:
-      gsqlite3:
-        database: "{{ database_name }}"
+      gpgsql:
+        gpgsql-dbname: "{{ gpgsql_database_name }}"
+        gpgsql-host: "{{ gpgsql_database_host }}"
+        gpgsql-user: "{{ gpgsql_database_user }}"
+        gpgsql-password: "{{ gpgsql_database_password }}"
+        gpgsql-extra-connection-parameters: "{{ gpgsql_database_extra }}"
         dnssec: false
-    pdns_sqlite_databases_locations:
-      - "{{ database_name }}"
 
-- hosts: 192.168.0.201
+# Slave/s definition
+
+- hosts: 192.168.0.201, 192.168.0.202
+#- hosts: 192.168.0.201
   roles:
     - { role: PowerDNS.pdns }
     - { role: sqlite_slave_insert }
@@ -32,3 +44,6 @@
       gsqlite3:
         database: "{{ database_name }}"
         dnssec: false
+    pdns_sqlite_databases_locations:
+      - "{{ database_name }}"
+
