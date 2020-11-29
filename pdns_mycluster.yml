@@ -6,44 +6,35 @@
   roles:
     - { role: PowerDNS.pdns }
   vars:
-    database_name: '/var/lib/powerdns/db.sqlite'
-    gpgsql_database_name: 'pdns'
-    gpgsql_database_host: '1.2.3.4'
-    gpgsql_database_user: 'pdns'
-    gpgsql_database_password: 'YOUR_DB_PASS_HERE'
-    gpgsql_database_extra: ''
     pdns_config:
       master: true
       slave: false
-      local-address: '192.168.0.200'
+      local-address: "{{ ansible_all_ipv4_addresses }}"
       prevent-self-notification: true
     pdns_backends:
       gpgsql:
-        gpgsql-dbname: "{{ gpgsql_database_name }}"
-        gpgsql-host: "{{ gpgsql_database_host }}"
-        gpgsql-user: "{{ gpgsql_database_user }}"
-        gpgsql-password: "{{ gpgsql_database_password }}"
-        gpgsql-extra-connection-parameters: "{{ gpgsql_database_extra }}"
+        gpgsql-dbname: "pdns"
+        gpgsql-host: "192.168.0.200"
+        gpgsql-user: "pdns"
+        gpgsql-password: "YOUR_DB_PASS_HERE"
+        gpgsql-extra-connection-parameters: ""
         dnssec: false
 
 # Slave/s definition
 
 - hosts: 192.168.0.201, 192.168.0.202
-#- hosts: 192.168.0.201
   roles:
     - { role: PowerDNS.pdns }
     - { role: sqlite_slave_insert }
   vars:
-    database_name: '/var/lib/powerdns/db.sqlite'
+    master_ip: "192.168.0.200"
     pdns_config:
       master: false
       slave: true
       superslave: true
-      local-address: "{{ ansible_eth0.ipv4.address }}"
+      local-address: "{{ ansible_all_ipv4_addresses }}"
     pdns_backends:
       gsqlite3:
-        database: "{{ database_name }}"
+        database: "/var/lib/powerdns/db.sqlite"
         dnssec: false
-    pdns_sqlite_databases_locations:
-      - "{{ database_name }}"
 
