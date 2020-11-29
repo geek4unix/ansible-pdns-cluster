@@ -11,6 +11,8 @@
       slave: false
       local-address: "{{ ansible_all_ipv4_addresses }}"
       prevent-self-notification: true
+      api: yes
+      api-key: "MY_MASTER_API_KEY"
     pdns_backends:
       gpgsql:
         gpgsql-dbname: "pdns"
@@ -22,6 +24,8 @@
 
 # Slave/s definition
 
+# Slave Server Set A
+
 - hosts: 192.168.0.201, 192.168.0.202
   roles:
     - { role: PowerDNS.pdns }
@@ -32,9 +36,28 @@
       master: false
       slave: true
       superslave: true
+      allow-axfr-ips: "{{ master_ip }}"
+      allow-notify-from: "{{ master_ip }}"
       local-address: "{{ ansible_all_ipv4_addresses }}"
     pdns_backends:
       gsqlite3:
         database: "/var/lib/powerdns/db.sqlite"
         dnssec: false
 
+# Slave Server Set B
+
+#- hosts: 1.2.3.4, 1.2.3.5
+#  roles:
+#    - { role: PowerDNS.pdns }
+#    - { role: sqlite_slave_insert }
+#  vars:
+#    master_ip: "1.4.5.3"
+#    pdns_config:
+#      master: false
+#      slave: true
+#      superslave: true
+#      local-address: "{{ ansible_all_ipv4_addresses }}"
+#    pdns_backends:
+#      gsqlite3:
+#        database: "/var/lib/powerdns/db.sqlite"
+#        dnssec: false
