@@ -1,0 +1,1 @@
+INSERT INTO supermasters (ip, nameserver, account) VALUES ("{{ master_ip }}", "ns2.example.org", "");

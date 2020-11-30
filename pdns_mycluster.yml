@@ -30,7 +30,7 @@
   roles:
     - { role: preinstall }
     - { role: PowerDNS.pdns }
-    - { role: sqlite_slave_insert }
+    - { role: sqlite_slave_config }
   vars:
     pdns_config:
       master: false

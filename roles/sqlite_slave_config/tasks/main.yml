@@ -1,0 +1,44 @@
+- name: Create a directory if it does not exist
+  file:
+    path: /{{ db_folder }}
+    state: directory
+    mode: '0755'
+
+- name: Configure the SQL schema file for slaves
+  template:
+    src: schema.sqlite3.sql.template
+    dest: /{{ db_folder }}/schema.sqlite3.sql
+
+- name: Configure the SQL supermaster file for slaves
+  template:
+    src: supermaster_insert.sql.template
+    dest: /{{ db_folder }}/supermaster_insert.sql
+
+- name: Stat File 
+  stat:
+    path: /etc/SUPERMASTER_SET
+  register: SUPERMASTER_SET
+
+- name: Stat Sqlite DB 
+  stat:
+    path: /{{ db_folder }}/{{ db_file }}
+  register: SQLITEDB
+
+- name: Stat Sqlite DB dir
+  stat:
+    path: /{{ db_folder }}
+  register: SQLITEDB_DIR
+
+- name: One Time SQL load of SQLite Schema
+  shell: "sqlite3 /{{ db_folder }}/{{ db_file }} < /{{ db_folder }}/schema.sqlite3.sql && chown -R pdns: /{{ db_folder }}"
+  when: SQLITEDB_DIR.stat.exists and not SQLITEDB.stat.exists
+
+- name: Stat Sqlite DB 
+  stat:
+    path: /{{ db_folder }}/{{ db_file }}
+  register: SQLITEDB
+
+- name: Run SQL insert for supermaster
+  shell: sqlite3 /{{ db_folder }}/{{ db_file }} < /{{ db_folder }}/supermaster_insert.sql > /etc/SUPERMASTER_SET
+  when: not SUPERMASTER_SET.stat.exists and SQLITEDB.stat.exists
+
