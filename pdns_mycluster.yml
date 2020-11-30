@@ -15,11 +15,10 @@
       api-key: "{{ master_api_key }}"
     pdns_backends:
       gpgsql:
-        gpgsql-host: "{{ database_host }}"
-        gpgsql-dbname: "{{ database_name }}"
-        gpgsql-user: "{{ database_user }}"
-        gpgsql-password: "{{ database_password }}"
-        gpgsql-extra-connection-parameters: "{{ database_extra }}"
+        host: "{{ database_host }}"
+        dbname: "{{ database_name }}"
+        user: "{{ database_user }}"
+        password: "{{ database_password }}"
         dnssec: false
 
 # Slave/s definition
