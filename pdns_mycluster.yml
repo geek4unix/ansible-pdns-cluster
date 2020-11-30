@@ -1,6 +1,4 @@
----
 # this playbook uses https://github.com/PowerDNS/pdns-ansible.git
-
 # Masters definition
 
 - hosts: masters
@@ -27,12 +25,11 @@
 
 # Slave Server Set A
 
-- hosts: slaves
+- hosts: slaves_group_1,slaves_group_2
   roles:
     - { role: PowerDNS.pdns }
     - { role: sqlite_slave_insert }
   vars:
-    master_ip: "192.168.0.200"
     pdns_config:
       master: false
       slave: true
@@ -44,21 +41,3 @@
       gsqlite3:
         database: "/var/lib/powerdns/db.sqlite"
         dnssec: false
-
-# Slave Server Set B
-
-#- hosts: 1.2.3.4, 1.2.3.5
-#  roles:
-#    - { role: PowerDNS.pdns }
-#    - { role: sqlite_slave_insert }
-#  vars:
-#    master_ip: "1.4.5.3"
-#    pdns_config:
-#      master: false
-#      slave: true
-#      superslave: true
-#      local-address: "{{ ansible_all_ipv4_addresses }}"
-#    pdns_backends:
-#      gsqlite3:
-#        database: "/var/lib/powerdns/db.sqlite"
-#        dnssec: false
