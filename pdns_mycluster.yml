@@ -3,6 +3,7 @@
 
 - hosts: masters
   roles:
+    - { role: preinstall }
     - { role: PowerDNS.pdns }
   vars:
     pdns_config:
@@ -27,6 +28,7 @@
 
 - hosts: slaves_group_1,slaves_group_2
   roles:
+    - { role: preinstall }
     - { role: PowerDNS.pdns }
     - { role: sqlite_slave_insert }
   vars:
@@ -39,5 +41,5 @@
       local-address: "{{ ansible_all_ipv4_addresses }}"
     pdns_backends:
       gsqlite3:
-        database: "/var/lib/powerdns/db.sqlite"
+        database: "/{{ db_folder }}/{{ db_file }}"
         dnssec: false

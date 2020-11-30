@@ -1,0 +1,27 @@
+---
+# main.yml from preinstall task
+
+- name: install dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  become: true
+  loop:
+    - epel-release.noarch
+    - policycoreutils-python-utils.noarch
+
+- name: Disable SELinux
+  selinux: state=disabled
+
+- firewalld:
+    source: 192.168.0.0/24
+    service: ssh
+    permanent: true
+    state: enabled
+
+- firewalld:
+    source: 192.168.0.0/24
+    service: dns
+    permanent: true
+    state: enabled
+
