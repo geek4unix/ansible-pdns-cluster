@@ -1,0 +1,55 @@
+---
+# main.yml from poweradmin main task
+
+- name: install dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  become: true
+  loop:
+    - php
+    - php-mbstring
+    - php-json
+    - httpd
+
+- name: Start service httpd, if not started
+  service:
+    name: httpd
+    enabled: yes
+    state: started
+
+- name: Get PowerAdmin UI
+  get_url:
+    url: https://github.com/poweradmin/poweradmin/archive/master.zip
+    dest: /root/poweradmin.zip
+    mode: '0400'
+
+- name: Stat PowerAdmin UI Folder
+  stat:
+    path: /var/www/html/poweradmin-master
+  register: PADP
+
+- name: Extract /root/poweradmin.zip
+  unarchive:
+    src: /root/poweradmin.zip
+    remote_src: yes
+    dest: /var/www/html
+    creates: /var/www/html/poweradmin-master
+
+
+- name: Stat PowerAdmin UI Folder
+  stat:
+    path: /var/www/html/poweradmin-master
+  register: PADP
+
+- name: PowerAdmin PHP Config
+  template:
+    src: config.inc.php.template
+    dest: /var/www/html/poweradmin-master/inc/config.inc.php
+    mode: '0440'
+    owner: 'apache'
+
+- name: Remove install directory
+  file:
+    path: /var/www/html/poweradmin-master/install
+    state: absent

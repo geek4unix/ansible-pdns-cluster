@@ -1,0 +1,5 @@
+#!/bin/bash
+for package in "mysql mariadb-server policycoreutils epel* pdns* httpd bind-utils syslog-ng"; do yum -y remove $package; done
+rm -fr /sqlite/
+rm -f /etc/SUPERMASTER_SET
+rm -fr /var/www/html/poweradmin-master

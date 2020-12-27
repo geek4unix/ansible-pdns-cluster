@@ -1,0 +1,11 @@
+<?php
+$db_type = 'sqlite';
+$db_file = "/sqlite/db.sqlite";
+
+$session_key = '*C@48NhhPf6Xxh6RSJ7wmRa2YM^opy5KsFNiY_GZbnkCoe';
+
+$iface_lang = 'en_EN';
+
+$dns_hostmaster = '';
+$dns_ns1 = '';
+$dns_ns2 = '';

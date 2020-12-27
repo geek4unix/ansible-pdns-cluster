@@ -9,19 +9,49 @@
   loop:
     - epel-release.noarch
     - policycoreutils-python-utils.noarch
+    - syslog-ng
+    - bind-utils
+
+- name: Enable and start syslog-ng
+  systemd:
+    name: syslog-ng
+    enabled: yes
+    state: started
 
 - name: Disable SELinux
   selinux: state=disabled
 
-- firewalld:
-    source: 192.168.0.0/24
-    service: ssh
-    permanent: true
-    state: enabled
+- name: Add repository
+  get_url:
+    url: https://repo.powerdns.com/repo-files/centos-auth-44.repo
+    dest: /etc/yum.repos.d/centos-auth-44.repo
+    mode: '0440'
 
-- firewalld:
-    source: 192.168.0.0/24
-    service: dns
-    permanent: true
-    state: enabled
+- name: yum-clean-metadata
+  command: yum clean metadata
+  args:
+    warn: no
 
+#- firewalld:
+#    source: 192.168.0.0/24
+#    service: ssh
+#    permanent: true
+#    state: disabled
+#
+#- firewalld:
+#    source: 192.168.0.0/24
+#    service: dns
+#    permanent: true
+#    state: disabled
+
+- name: Script to reset packages and data ( for testing the install )
+  template:
+    src: reset_data_zero.sh.template
+    dest: /root/reset_data_zero.sh
+    mode: '0700'
+
+- name: example.com zone file. can be used to bootstrap or template from
+  template:
+    src: example.com.db.template
+    dest: /root/example.com.db
+    mode: '0600'
