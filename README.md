@@ -12,6 +12,7 @@ Note: its all based around centOS 8, though the ansible-pdns module is capable o
 This playbooks installs and configures a 1 master 2 slave sqlite cluster and sets up the PowerAdmin UI 
 
 See PowerAdmin - https://github.com/poweradmin/poweradmin
+
 See PowerDNS Ansible Module - https://github.com/PowerDNS/pdns-ansible
 
 
@@ -37,3 +38,13 @@ ansible -m ping all
 6) Run the playbook
 
 ansible-playbook pdns_mycluster.yml
+
+This *should* result in a working 3 server pdns cluster , using sqlite dbs on each node.
+
+The slaves will auto configure when a zone is created on the master. 
+
+A few tools are included:
+
+The script md5_zone_check.sh can be used to make reports on md5 sum of the zones on each of the 3 servers.
+
+The script notify_all_slaves.sh can be used to refresh a slave that has been added, rebuild or replaced.
