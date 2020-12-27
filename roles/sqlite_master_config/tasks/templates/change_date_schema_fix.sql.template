@@ -1,0 +1,1 @@
+ALTER TABLE records ADD COLUMN change_data timestamp DEFAULT NULL;
