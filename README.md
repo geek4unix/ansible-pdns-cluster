@@ -1,11 +1,18 @@
 What is this for ?
 ------------------
 
-This ansible playbook will build a centos 8 pdns cluster, at least 1 master (maria/mysqldb) and 2 slaves (sqlite)
+This ansible playbook will build a centos 8 pdns cluster, at least 1 master (sqlite) and 2 slaves (sqlite).
+
+If you are interested in trying out PowerDNS supermaster cluster, this should be helpful to you to test automatic zone creation via supermaster and slave.
 
 Its important that slaves are able to recreated at will simply.
 
 Note: its all based around centOS 8, though the ansible-pdns module is capable of supporting other OS, this playbook isnt.
+
+This playbooks installs and configures a 1 master 2 slave sqlite cluster and sets up the PowerAdmin UI 
+
+See PowerAdmin - https://github.com/poweradmin/poweradmin
+See PowerDNS Ansible Module - https://github.com/PowerDNS/pdns-ansible
 
 
 How to use this ?
